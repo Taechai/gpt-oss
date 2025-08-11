@@ -18,6 +18,13 @@ const HF_MODEL = 'openai/gpt-oss-20b:fireworks-ai';
 
 app.post('/api/chat', async (req, res) => {
   const { message } = req.body;
+  
+  // Check if API token is configured
+  if (!HUGGINGFACE_API_TOKEN) {
+    console.error('Hugging Face API token is not configured');
+    return res.status(500).json({ response: 'Error: API token not configured. Please check environment variables.' });
+  }
+
   try {
     const payload = {
       model: HF_MODEL,
