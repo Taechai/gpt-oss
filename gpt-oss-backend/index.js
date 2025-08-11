@@ -24,7 +24,8 @@ app.post('/api/chat', async (req, res) => {
       messages: [
         { role: 'system', content: 'You are a helpful assistant. Use markdown formatting in your responses: **bold** for emphasis, proper headings with #, ##, ###, bullet points with -, and tables with | when needed. Structure your content with clear sections and maintain good spacing. Use <br> for line breaks when needed.' },
         { role: 'user', content: message }
-      ]
+      ],
+      temperature: 0.7
     };
     const hfRes = await fetch(HF_OPENAI_URL, {
       method: 'POST',
@@ -33,13 +34,7 @@ app.post('/api/chat', async (req, res) => {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
-      body: JSON.stringify({
-        ...payload,
-        parameters: {
-          temperature: 0.7,
-          response_format: { type: "text" }
-        }
-      })
+      body: JSON.stringify(payload)
     });
     if (!hfRes.ok) {
       const error = await hfRes.text();
@@ -55,7 +50,8 @@ app.post('/api/chat', async (req, res) => {
     }
     res.json({ response: reply });
   } catch (err) {
-    res.status(500).json({ response: 'Error contacting Hugging Face OpenAI API.' });
+    console.error('API Error:', err);
+    res.status(500).json({ response: `Error contacting Hugging Face OpenAI API: ${err.message}` });
   }
 });
 
