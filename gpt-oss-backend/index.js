@@ -62,6 +62,6 @@ app.post('/api/chat', async (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`Backend listening at http://localhost:${port}`);
-});
+
+// Export the app for Vercel serverless function compatibility
+export default app;
